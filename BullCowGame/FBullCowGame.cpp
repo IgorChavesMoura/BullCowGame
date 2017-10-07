@@ -87,16 +87,6 @@ int32 FBullCowGame::GetHiddenWordLength() const{
 	return MyHiddenWord.length();
 }
 
-void FBullCowGame::PlayGame(){
-}
-
-bool FBullCowGame::AskToPlayAgain(){
-	return false;
-}
-
-void FBullCowGame::PrintIntro(){
-}
-
 bool FBullCowGame::IsIsogram(FString Guess) const {
 	
 	//Treat 0 and 1 letter word as isograms
@@ -130,4 +120,144 @@ bool FBullCowGame::IsLowercase(FString Guess) const {
 	}
 	
 	return true;
+}
+void FBullCowGame::PrintIntro() {
+
+	std::cout << "Welcome to Bulls and Cows, a fun word game.\n";
+	std::cout << std::endl;
+	std::cout << "          }   {         ___ " << std::endl;
+	std::cout << "          (o o)        (o o) " << std::endl;
+	std::cout << "   /-------\\ /          \\ /-------\\ " << std::endl;
+	std::cout << "  / | BULL |O            O| COW  | \\ " << std::endl;
+	std::cout << " *  |-,--- |              |------|  * " << std::endl;
+	std::cout << "    ^      ^              ^      ^ " << std::endl;
+	std::cout << "Can you guess the " << GetHiddenWordLength() << " letter isogram I'm thinking of ?" << "\n";
+
+	return;
+}
+
+
+FText FBullCowGame::GetGuess() {
+
+
+
+
+
+	FText Guess = " ";
+	EGuessStatus Status;
+
+	do {
+		int CurrentTry = GetCurrentTry();
+
+		std::cout << "Try " << CurrentTry << " - Turns left: " << (GetMaxTries() - GetCurrentTry()) << std::endl;
+
+		std::cout << "Enter your guess: ";
+
+		//Get the whole line until the line break (\n)
+		getline(std::cin, Guess);
+
+		Status = CheckGuessValidity(Guess);
+
+
+		switch (Status) {
+		case EGuessStatus::Wrong_Length:
+
+			std::cout << "Please enter a " << GetHiddenWordLength() << " letter word" << std::endl;
+
+			break;
+
+		case EGuessStatus::Not_Lowercase:
+
+			std::cout << "Please enter all lowercase letters" << std::endl;
+
+			break;
+
+		case EGuessStatus::Not_Isogram:
+
+			std::cout << "Please enter a word without repeating letters" << std::endl;
+
+			break;
+
+
+
+
+		}
+
+
+	} while (Status != EGuessStatus::OK);
+
+	return Guess;
+
+}
+void FBullCowGame::PrintGuess(FText Guess) {
+
+	std::cout << "Your guess was: " << Guess << "\n";
+}
+void FBullCowGame::PlayGame() {
+
+	Reset();
+
+	int32 MaxTries = GetMaxTries();
+
+	while (!IsGameWon() && (GetCurrentTry() <= GetMaxTries())) {
+
+		FText Guess = GetGuess();
+
+
+		PrintGuess(Guess);
+
+		FBullCowCount BCCount = SubmitValidGuess(Guess);
+
+		std::cout << "Bulls: " << BCCount.Bulls << std::endl;
+		std::cout << "Cows: " << BCCount.Cows << std::endl;
+
+		std::cout << std::endl;
+
+	}
+
+	PrintGameSummary();
+
+	return;
+
+}
+bool FBullCowGame::AskToPlayAgain() {
+
+	std::cout << "Do you want to play again with the same hidden word ? (y/n) ";
+	std::string Response = " ";
+	getline(std::cin, Response);
+
+	std::cout << std::endl;
+
+	return (Response[0] == 'y') || (Response[0] == 'Y');
+}
+void FBullCowGame::PrintGameSummary() {
+	if (IsGameWon()) {
+		std::cout << "WELL DONE! YOU WIN" << std::endl;
+	}
+	else {
+		std::cout << "Better luck next time." << std::endl;
+	}
+}
+
+void FBullCowGame::RunGame(){
+	bool bCanPlayAgain = false;
+
+	do {
+		PrintIntro();
+		PlayGame();
+		bCanPlayAgain = AskToPlayAgain();
+
+	} while (bCanPlayAgain);
+}
+
+FBullCowGame FBullCowGame::CreateGame(){
+	FBullCowGame* BCGame = new FBullCowGame();
+
+	return *BCGame;
+
+
+}
+
+void FBullCowGame::DestroyGame(FBullCowGame BCGame){
+	delete &BCGame;
 }

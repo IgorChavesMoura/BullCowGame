@@ -4,8 +4,12 @@
 
 #define TMap std::map
 
+//Unreal cross platform API
+
+using FText = std::string;
 using FString = std::string;
 using int32 = int;
+
 
 struct FBullCowCount {
 	int32 Bulls = 0;
@@ -21,6 +25,9 @@ enum class EGuessStatus { //Strongly defined enum, smaller scope
 
 
 class FBullCowGame {
+
+
+
 public:
 
 	FBullCowGame();
@@ -35,9 +42,20 @@ public:
 
 
 
+	
+
+	//Unreal code pattern, all variables and functions names are capitalized
+
+	void PrintIntro(); //Signature of the function
+	FText GetGuess();
+	void PrintGuess(FText);
 	void PlayGame();
 	bool AskToPlayAgain();
-	void PrintIntro();
+	void PrintGameSummary();
+	void RunGame();
+	static FBullCowGame CreateGame();
+	static void DestroyGame(FBullCowGame);
+
 
 
 private:
