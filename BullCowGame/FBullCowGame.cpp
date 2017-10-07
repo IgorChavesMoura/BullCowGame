@@ -94,31 +94,33 @@ bool FBullCowGame::IsIsogram(FString Guess) const {
 		return true;
 	}
 	
-	TMap<char, bool> LetterSeen;
+	TMap<char, bool> LetterSeen = *(new TMap<char, bool>());;
 
 	for (auto Letter : Guess) { //auto means the compiler will decide which type the variable will be 
 		Letter = tolower(Letter);
 
 		if (!!LetterSeen[Letter]) {
+			delete &LetterSeen;
 			return false;
 		}
 		LetterSeen[Letter] = true;
 	}
 
-	
+	delete &LetterSeen;
 	return true;
 }
 
 bool FBullCowGame::IsLowercase(FString Guess) const {
 	
-	TMap <char, bool> Letters;
+	TMap <char, bool> Letters = *(new TMap<char,bool>());
 
 	for (auto Letter : Guess) {
 		if (!islower(Letter)) {
+			delete &Letters;
 			return false;
 		}
 	}
-	
+	delete &Letters;
 	return true;
 }
 void FBullCowGame::PrintIntro() {
